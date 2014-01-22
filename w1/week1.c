@@ -3,12 +3,12 @@
 #include <string.h>
 #include <ctype.h>
 
-typedef char WORD[20];
+typedef char WORD[40];
 typedef struct
 {
-    char word[20];
+    char word[40];
     int number;
-    int list[20];
+    int list[1000];
     int top;
 }data;
 
@@ -42,25 +42,25 @@ int i=0;
 
     else
     {
-for(p=root->head;p!=NULL;p=p->next)
-{
-    if(strcmp(p->d.word,xau)==0)
-    {
-       // printf("%s  %d",xau,j);
-        i=1;
-        p->d.number++;
-       if(p->d.list[p->d.top-1]!=j)
-       {
-           p->d.list[p->d.top]=j;
-           p->d.top++;
-       }
-    }
+        for(p=root->head;p!=NULL;p=p->next)
+        {   
+            if(strcmp(p->d.word,xau)==0)
+           {
+              // printf("%s  %d",xau,j);
+            i=1;
+            p->d.number++;
+            if(p->d.list[p->d.top-1]!=j)
+            {
+                p->d.list[p->d.top]=j;
+                p->d.top++;
+            }
+            }
 
-}
+        }
 
-if(i==0)
-{
-//printf("%s  %d",xau,j);
+        if(i==0)
+        {
+        //printf("%s  %d",xau,j);
         p=(node*)malloc(sizeof(node));
         strcpy(p->d.word,xau);
         p->d.number=1;
@@ -69,36 +69,35 @@ if(i==0)
 
         p->next=root->head;
         root->head=p;
-
-}
+        }
 
     }
 }
 
 void showlist(linklist *root)
-{node*p;
-int i=0;
-for(p=root->head;p!=NULL;p=p->next)
 {
-    printf("%s %d ",p->d.word,p->d.number);
-    for(i=0;i<p->d.top;i++)
+    node*p;
+    int i=0;
+    for(p=root->head;p!=NULL;p=p->next)
     {
-        printf("%d ",p->d.list[i]);
+        printf("%s %d ",p->d.word,p->d.number);
+        for(i=0;i<p->d.top;i++)
+        {
+            printf("%d ",p->d.list[i]);
+        }
+        printf("\n");
     }
-    printf("\n");
-}
-
 }
 
 void sort(linklist*root)
 {
-    node*p1,*p2;
+    
+    FILE *fout;
+     fout = fopen("out.txt","w");node*p1,*p2;
     int i=0;
     data d1,d2,tg;
     for(p1=root->head;p1!=root->end;p1=p1->next)
-
     for(p2=p1;p2!=NULL;p2=p2->next)
-
     {
         d1=p2->d;
         d2=p1->d;
@@ -110,18 +109,46 @@ void sort(linklist*root)
             p1->d=tg;
         }
     }
-
-
-    showlist(root);
+    printlist(root,fout);
+    fclose(fout);
+   // showlist(root);
 }
+
+void printlist(linklist *root, FILE *fout)
+{
+  node*p;
+  int i=0,n,l;
+  char tu[20];
+  if (fout != NULL)
+  for(p=root->head;p!=NULL;p=p->next)
+    {
+
+      fprintf(fout,"%s %d",p->d.word,p->d.number);
+      for(i=0;i<p->d.top;i++)
+        {
+          fprintf(fout,",%d",p->d.list[i]);
+        }
+      fprintf(fout,"\n");
+    }
+}
+
+void freeTree(linklist *root){
+node *tmp;
+    while(root->head!=NULL){
+        tmp = root->head;
+        root->head = root->head->next;
+    }
+}
+
 int main()
-{FILE *f;
-int i=0,j=1,n=0,sign=0,daucau=0;
-char c;
-char xau[40];
-WORD stopw[40];
-linklist root;
-root.head=root.end=NULL;
+{
+    FILE *f;
+    int i=0,j=1,n=0,sign=0,daucau=0;
+    char c;
+    char xau[40];
+    WORD stopw[100];
+    linklist root;
+    root.head=root.end=NULL;
     f=fopen("stopw.txt","r");
     while(!feof(f))
     {
@@ -131,7 +158,7 @@ root.head=root.end=NULL;
             xau[i]=c;
             i++;
         }else
-        {
+         {
             xau[i]='\0';
             strcpy(stopw[n],xau);
             n++;
@@ -139,11 +166,8 @@ root.head=root.end=NULL;
             i=0;
         }
     }
-
-
 fclose(f);
-fopen("unnikatha.txt","r");
-
+fopen("2000010a.txt","r");
   while(!feof(f))
     {
         c=fgetc(f);
@@ -158,47 +182,40 @@ fopen("unnikatha.txt","r");
             if(daucau!=1&&c>=60&&c<=95)
             while(isalpha(fgetc(f)))
                   continue;
-else{
-            xau[i]=tolower(c);
-            i++;
-    }
+        else
+            {
+                xau[i]=tolower(c);
+                i++;
+            }
         }else
-        {
-
-
-
-            xau[i]='\0';
-if(strcmp(xau,"")!=0)
-{//printf("%s  %d \n",xau,j);
-    for(i=0;i<n;i++)
-    {
-        if(strcmp(xau,stopw[i])==0)
-        sign=1;
-    }
-  if(sign!=1)
-insert(&root,xau,j);
-}
+            {
+                xau[i]='\0';
+                if(strcmp(xau,"")!=0)
+                {//printf("%s  %d \n",xau,j);
+                  for(i=0;i<n;i++)
+                {
+                if(strcmp(xau,stopw[i])==0)
+                  sign=1;
+                }
+                 if(sign!=1){
+                    
+                    //printf(">>%s\n",xau);
+                 insert(&root,xau,j);
+             }
+                }
             strcpy(xau,"");
             i=0;
             sign=0;
-        }
+            }
 
           if(c=='.')
             daucau=1;
             else
             daucau=0;
-    }
-
-
-fclose(f);
-
-
-
-
-sort(&root);
-
-//showlist(&root);
-
-
+}
+    fclose(f);
+    sort(&root);
+    //showlist(&root);
+    freeTree(&root);
     return 0;
 }
