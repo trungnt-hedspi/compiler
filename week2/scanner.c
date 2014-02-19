@@ -6,11 +6,6 @@
 #include "token.h"
 #include "error.h"
 
-#include "reader.c"
-#include "charcode.c"
-#include "token.c"
-#include "error.c"
-
 extern int lineNo;
 extern int colNo;
 extern int currentChar;
